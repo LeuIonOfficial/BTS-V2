@@ -29,7 +29,7 @@ export const routes: Routes = [
       {
         path: appRoutes.sales,
         component: SalesPageComponent,
-      },
+      }
     ],
     component: LayoutComponent,
     canActivate: [canActivateAuth],

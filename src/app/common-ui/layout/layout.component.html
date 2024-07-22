@@ -1,2 +1,4 @@
-<app-navbar></app-navbar>
+@if (profile$ | async; as profile) {
+  <app-navbar [profile]="profile.data"></app-navbar>
+}
 <router-outlet></router-outlet>

@@ -1,20 +1,21 @@
 import { CommonModule } from "@angular/common";
-import { Component, signal } from "@angular/core";
+import { Component, input, signal } from "@angular/core";
 import { MenuItem } from "./navbar.types";
 import { appRoutes } from "../../app.routes";
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { ToolbarModule } from 'primeng/toolbar';
+import { AvatarModule } from 'primeng/avatar';
+import { ProfileDto } from "../../data/dto/profile.type";
 
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ToolbarModule, AvatarModule],
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.css",
 })
 export class NavbarComponent {
-  isMobileMenuOpen = signal(false);
-  isProfileMenuOpen = signal(false);
-
+  profile = input<ProfileDto>()
   location: string | null = null;
 
   constructor(private router: Router) {
@@ -31,17 +32,4 @@ export class NavbarComponent {
     { name: "Calendar", href: "#" },
   ];
 
-  profileMenuItems: MenuItem[] = [
-    { name: "Your Profile", href: "#" },
-    { name: "Settings", href: "#" },
-    { name: "Sign out", href: "#" },
-  ];
-
-  toggleMobileMenu() {
-    this.isMobileMenuOpen.set(!this.isMobileMenuOpen());
-  }
-
-  toggleProfileMenu() {
-    this.isProfileMenuOpen.set(!this.isProfileMenuOpen());
-  }
 }

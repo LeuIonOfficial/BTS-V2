@@ -1,0 +1,167 @@
+<p-dialog
+  [(visible)]="status"
+  [style]="{ width: '800px' }"
+  header="Request Details"
+  [modal]="true"
+  styleClass="p-fluid"
+  (onHide)="hideDialog()"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="requestForm">
+      <div class="card">
+        <h5>Personal Information <span class="required">*</span></h5>
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-12 md:col-6">
+            <label for="firstname2"
+              >Firstname <span class="required">*</span></label
+            >
+            <input pInputText id="firstname2" formControlName="first_name" />
+          </div>
+          <div class="field col-12 md:col-6">
+            <label for="lastname2"
+              >Lastname <span class="required">*</span></label
+            >
+            <input pInputText id="lastname2" formControlName="last_name" />
+          </div>
+          @for (email of emails.controls; track email; let i = $index) {
+            <div formArrayName="emails" class="field col-12 md:col-6">
+              <label for="email-{{ i }}">
+                Email <span class="required">*</span>
+              </label>
+              <input pInputText id="email-{{ i }}" [formControlName]="i" />
+            </div>
+          }
+
+          <div
+            formArrayName="phones"
+            class="field col-12 md:col-6"
+            *ngFor="let phone of phones.controls; let i = index"
+          >
+            <label for="phone-{{ i }}"
+              >Phone <span class="required">*</span></label
+            >
+            <input pInputText id="phone-{{ i }}" [formControlName]="i" />
+          </div>
+          <div class="field col-12">
+            <label for="address"
+              >Marketing Source <span class="required">*</span></label
+            >
+            <p-dropdown
+              [options]="dropdownItems"
+              optionLabel="name"
+              optionValue="code"
+              formControlName="marketing_source"
+            ></p-dropdown>
+          </div>
+          <div class="field col-12">
+            <label for="address">Notes</label>
+            <input pInputTextarea id="notes" formControlName="notes" rows="4" />
+          </div>
+        </div>
+      </div>
+
+      <div
+        formArrayName="details"
+        *ngFor="let detail of details.controls; let i = index"
+      >
+        <div [formGroupName]="i" class="card mt-6">
+          <h5>Flight Details {{ i + 1 }} <span class="required">*</span></h5>
+          <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+              <label for="from-{{ i }}"
+                >From <span class="required">*</span></label
+              >
+              <input pInputText id="from-{{ i }}" formControlName="iata_from" />
+            </div>
+            <div class="field col-12 md:col-6">
+              <label for="to-{{ i }}">To <span class="required">*</span></label>
+              <input pInputText id="to-{{ i }}" formControlName="iata_to" />
+            </div>
+            <div class="field col-12 md:col-6">
+              <label for="date-{{ i }}"
+                >Pick a date <span class="required">*</span></label
+              >
+              <p-calendar
+                id="date-{{ i }}"
+                formControlName="departure_date"
+                [showIcon]="true"
+              ></p-calendar>
+            </div>
+            <div class="field col-12 md:col-6">
+              <label for="flightClass-{{ i }}"
+                >Flight Class <span class="required">*</span></label
+              >
+              <p-dropdown
+                [options]="flightClassItems"
+                optionLabel="name"
+                optionValue="code"
+                formControlName="flight_class"
+              ></p-dropdown>
+            </div>
+            <div class="field col-12 md:col-4">
+              <label for="adults-{{ i }}"
+                >Adults <span class="required">*</span></label
+              >
+              <input
+                pInputText
+                id="adults-{{ i }}"
+                type="number"
+                formControlName="adults"
+              />
+            </div>
+            <div class="field col-12 md:col-4">
+              <label for="child-{{ i }}">Child</label>
+              <input
+                pInputText
+                id="child-{{ i }}"
+                formControlName="child"
+                type="number"
+              />
+            </div>
+            <div class="field col-12 md:col-4">
+              <label for="infants-{{ i }}">Infants</label>
+              <input
+                pInputText
+                id="infants-{{ i }}"
+                formControlName="infants"
+                type="number"
+              />
+            </div>
+            <div class="field col-12">
+              <p-button
+                icon="pi pi-times"
+                class="p-button-text p-button-danger"
+                (onClick)="removeFlightDetail(i)"
+                *ngIf="details.length > 1"
+              ></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <p-button
+          label="Add Flight"
+          icon="pi pi-plus"
+          (onClick)="addFlightDetail()"
+        ></p-button>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      [text]="true"
+      (onClick)="hideDialog()"
+    />
+    <p-button
+      label="Save"
+      icon="pi pi-check"
+      [text]="true"
+      (onClick)="saveRequest()"
+    />
+  </ng-template>
+</p-dialog>
+<p-toast></p-toast>

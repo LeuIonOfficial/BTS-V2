@@ -7,6 +7,7 @@ import {
 } from "@angular/forms";
 import { AuthService } from "../../auth/auth.service";
 import { Router } from "@angular/router";
+import { appRoutes } from "../../app.routes";
 
 @Component({
   selector: "app-login-page",
@@ -29,7 +30,7 @@ export class LoginPageComponent {
       this.authService
         // @ts-ignore
         .login(this.form.value)
-        .subscribe((res) => this.router.navigate(["/"]));
+        .subscribe((res) => this.router.navigate([appRoutes.requests]));
     }
   }
 }

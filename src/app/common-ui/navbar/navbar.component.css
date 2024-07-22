@@ -1,3 +1,9 @@
+.title {
+  font-size: large;
+  font-weight: 600;
+  color: white;
+}
+
 .is-active {
-    @apply bg-gray-900 text-white;
+  color: red;
 }
