@@ -57,5 +57,15 @@ export type TicketCategory = {
 };
 
 export type FlightResponse = {
-    data: TicketCategory[]
-}
+  data: TicketCategory[];
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: [];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+  };
+};
