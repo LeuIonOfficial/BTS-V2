@@ -1,20 +1,20 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms";
-import { AuthService } from "../../auth/auth.service";
-import { Router } from "@angular/router";
-import { appRoutes } from "../../app.routes";
+} from '@angular/forms';
+import { AuthService } from '../../auth/auth.service';
+import { Router } from '@angular/router';
+import { appRoutes } from '../../app.routes';
 
 @Component({
-  selector: "app-login-page",
+  selector: 'app-login-page',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: "./login-page.component.html",
-  styleUrl: "./login-page.component.css",
+  templateUrl: './login-page.component.html',
+  styleUrl: './login-page.component.css',
 })
 export class LoginPageComponent {
   authService = inject(AuthService);

@@ -43,9 +43,7 @@
             <input pInputText id="phone-{{ i }}" [formControlName]="i" />
           </div>
           <div class="field col-12">
-            <label for="address"
-              >Marketing Source <span class="required">*</span></label
-            >
+            <label>Marketing Source <span class="required">*</span></label>
             <p-dropdown
               [options]="dropdownItems"
               optionLabel="name"
@@ -54,8 +52,13 @@
             ></p-dropdown>
           </div>
           <div class="field col-12">
-            <label for="address">Notes</label>
-            <input pInputTextarea id="notes" formControlName="notes" rows="4" />
+            <label>Notes</label>
+            <textarea
+              pInputTextarea
+              id="notes"
+              formControlName="notes"
+              rows="4"
+            ></textarea>
           </div>
         </div>
       </div>

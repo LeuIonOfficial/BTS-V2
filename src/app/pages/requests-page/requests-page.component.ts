@@ -17,9 +17,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { RequestDialogComponent } from '../../common-ui/request-dialog/request-dialog.component';
 import { TicketCategory } from '../../data/dto/flights.type';
 import { FlightsService } from '../../data/services/flights.service';
-import { ConvertFlightClassPipe } from "../../pipes/convert-flight-class.pipe";
-
-
+import { ConvertFlightClassPipe } from '../../pipes/convert-flight-class.pipe';
 
 interface Country {
   name?: string;
@@ -65,13 +63,13 @@ interface Customer {
     ToolbarModule,
     FileUploadModule,
     RequestDialogComponent,
-    ConvertFlightClassPipe
-],
+    ConvertFlightClassPipe,
+  ],
 })
 export class RequestsPageComponent implements OnInit {
   flightService = inject(FlightsService);
 
-  reuqests!: TicketCategory[];
+  requests!: TicketCategory[];
 
   selectedCustomers!: Customer[];
 
@@ -89,7 +87,7 @@ export class RequestsPageComponent implements OnInit {
     { field: 'agent_name', title: 'Agent Name' },
     { field: '', title: 'Client Email' },
     { field: '', title: 'Client Phone' },
-  ]
+  ];
 
   statuses!: any[];
 
@@ -100,7 +98,9 @@ export class RequestsPageComponent implements OnInit {
   productDialog = false;
 
   ngOnInit() {
-    this.flightService.getFlights(1, 100).subscribe((data) => {this.reuqests = data.data});
+    this.flightService.getFlights(1, 100).subscribe((data) => {
+      this.requests = data.data;
+    });
     this.loading = false;
 
     this.representatives = [
@@ -137,11 +137,11 @@ export class RequestsPageComponent implements OnInit {
     this.productDialog = $event;
   }
 
-  fliter($event: any) {
+  filter($event: any) {
     console.log('filter', $event);
   }
 
   setRequests($requests: TicketCategory[]) {
-    this.reuqests = $requests;
+    this.requests = $requests;
   }
 }

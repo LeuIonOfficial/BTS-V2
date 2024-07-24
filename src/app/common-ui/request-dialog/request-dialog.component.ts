@@ -156,21 +156,29 @@ export class RequestDialogComponent implements OnInit {
         .postFlight({ direction: 'OW', ...payload })
         .subscribe({
           next: () => {
-            this.showSuccess()            
+            this.showSuccess();
             this.hideDialog();
             this.flightsService.getFlights(1, 100).subscribe({
               next: (flights) => {
                 this.setRequests.emit(flights.data);
               },
               error: (error) => {
-                this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to reload flights'});
-              }
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Failed to reload flights',
+                });
+              },
             });
           },
           error: (error) => {
-            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Request failed'});
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Request failed',
+            });
             console.error('Request failed', error);
-          }
+          },
         });
     }
   }
