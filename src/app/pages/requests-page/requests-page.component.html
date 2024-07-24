@@ -27,12 +27,17 @@
     [(selection)]="selectedCustomers"
     dataKey="id"
     [rowHover]="true"
-    [rows]="10"
+    [rows]="perPage"
+    [totalRecords]="totalRecords"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 25, 50]"
     [loading]="loading"
     [paginator]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [lazy]="true"
+    (onLazyLoad)="onPageChange($event)"
+    currentPageReportTemplate="Showing {{ page }} to {{ perPage }} of {{
+      totalRecords
+    }} entries"
     [filterDelay]="0"
     (onFilter)="filter($event)"
   >
@@ -62,21 +67,75 @@
               <div class="flex justify-content-between align-items-center">
                 {{ item.title }}
                 <p-sortIcon field="{{ item.field }}" />
-                <p-columnFilter
-                  type="text"
-                  field="{{ item.field }}"
-                  display="menu"
-                  class="ml-auto"
-                  [showMatchModes]="false"
-                  [showOperator]="false"
-                  [showAddButton]="false"
-                >
-                  <ng-template pTemplate="header">
-                    <div class="px-3 pt-3 pb-0">
-                      <span class="font-bold">Search by {{ item.title }}</span>
-                    </div>
-                  </ng-template>
-                </p-columnFilter>
+                @if (item.field === "request_created") {
+                  <p-columnFilter type="date" field="date" display="menu" />
+                } @else if (item.field === "agent_name") {
+                  <p-columnFilter
+                    field="representative"
+                    matchMode="in"
+                    display="menu"
+                    [showMatchModes]="false"
+                    [showOperator]="false"
+                    [showAddButton]="false"
+                  >
+                    <ng-template pTemplate="header">
+                      <div class="px-3 pt-3 pb-0">
+                        <span class="font-bold">Agent Picker</span>
+                      </div>
+                    </ng-template>
+                    <ng-template
+                      pTemplate="filter"
+                      let-value
+                      let-filter="filterCallback"
+                    >
+                      <p-multiSelect
+                        [options]="representatives"
+                        placeholder="Any"
+                        (onChange)="filter($event.value)"
+                        optionLabel="name"
+                      >
+                        <ng-template let-option pTemplate="item">
+                          <div class="inline-block vertical-align-middle">
+                            <img
+                              [alt]="option.label"
+                              src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{
+                                option.image
+                              }}"
+                              width="24"
+                              class="vertical-align-middle"
+                            />
+                            <span class="ml-1 mt-1">{{ option.name }}</span>
+                          </div>
+                        </ng-template>
+                      </p-multiSelect>
+                    </ng-template>
+                  </p-columnFilter>
+                } @else if (item.field === "marketing_type") {
+                  <p-columnFilter
+                    field="status"
+                    matchMode="equals"
+                    display="menu"
+                    [showMatchModes]="false"
+                    [showOperator]="false"
+                    [showAddButton]="false"
+                  >
+                    <ng-template
+                      pTemplate="filter"
+                      let-value
+                      let-filter="filterCallback"
+                    >
+                      <p-dropdown
+                        [options]="statuses"
+                        (onChange)="filter($event.value)"
+                        placeholder="Any"
+                      >
+                        <ng-template let-option pTemplate="item">
+                          <p-tag [value]="option.value" />
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                }
               </div>
             </th>
           } @else {

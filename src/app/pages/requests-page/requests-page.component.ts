@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
@@ -18,6 +18,9 @@ import { RequestDialogComponent } from '../../common-ui/request-dialog/request-d
 import { TicketCategory } from '../../data/dto/flights.type';
 import { FlightsService } from '../../data/services/flights.service';
 import { ConvertFlightClassPipe } from '../../pipes/convert-flight-class.pipe';
+import { FormsModule } from '@angular/forms';
+import { PaginatorModule } from 'primeng/paginator';
+import { Subscription } from 'rxjs';
 
 interface Country {
   name?: string;
@@ -64,11 +67,17 @@ interface Customer {
     FileUploadModule,
     RequestDialogComponent,
     ConvertFlightClassPipe,
+    FormsModule,
+    PaginatorModule,
   ],
 })
 export class RequestsPageComponent implements OnInit {
-  flightService = inject(FlightsService);
+  private flightService = inject(FlightsService);
+  private subscriptions: Subscription[] = [];
 
+  page = 1;
+  perPage = 10;
+  totalRecords = 0;
   requests!: TicketCategory[];
 
   selectedCustomers!: Customer[];
@@ -98,11 +107,15 @@ export class RequestsPageComponent implements OnInit {
   productDialog = false;
 
   ngOnInit() {
-    this.flightService.getFlights(1, 100).subscribe((data) => {
-      this.requests = data.data;
-    });
-    this.loading = false;
+    this.setupRepresentatives();
+    this.setupStatuses();
+  }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  setupRepresentatives() {
     this.representatives = [
       { name: 'Amy Elsner', image: 'amyelsner.png' },
       { name: 'Anna Fali', image: 'annafali.png' },
@@ -115,7 +128,9 @@ export class RequestsPageComponent implements OnInit {
       { name: 'Stephen Shaw', image: 'stephenshaw.png' },
       { name: 'Xuxue Feng', image: 'xuxuefeng.png' },
     ];
+  }
 
+  setupStatuses() {
     this.statuses = [
       { label: 'Unqualified', value: 'unqualified' },
       { label: 'Qualified', value: 'qualified' },
@@ -124,6 +139,24 @@ export class RequestsPageComponent implements OnInit {
       { label: 'Renewal', value: 'renewal' },
       { label: 'Proposal', value: 'proposal' },
     ];
+  }
+
+  fetchRequests() {
+    this.loading = true;
+    const subscription = this.flightService
+      .getFlights(this.page, this.perPage)
+      .subscribe({
+        next: (data) => {
+          this.totalRecords = data.meta.total;
+          this.requests = data.data;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching requests', err);
+          this.loading = false;
+        },
+      });
+    this.subscriptions.push(subscription);
   }
 
   openNew() {
@@ -143,5 +176,15 @@ export class RequestsPageComponent implements OnInit {
 
   setRequests($requests: TicketCategory[]) {
     this.requests = $requests;
+  }
+
+  onPageChange($event: any) {
+    console.log('onPageChange', $event);
+    this.page = $event.first / $event.rows + 1;
+    this.perPage = $event.rows;
+
+    console.log('onPageChange', $event);
+
+    this.fetchRequests();
   }
 }
